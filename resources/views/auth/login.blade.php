@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>{{ !empty(strtoupper($data['title']).' | '.strtoupper($data['header'])) ? strtoupper($data['title']).' | '.strtoupper($data['header']) : ''}}</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -11,16 +12,18 @@
   <link rel="stylesheet" href="{{ url('assets/css/flash.css') }}">
 </head>
 <body class="hold-transition login-page">
+    <p class="h1 mb-5">TAREFA</p>
     <div class="login-box">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <p class="h2">{{ $data['title'] }}</p>
+                <p class="h4">{{ $data['title'] }}</p>
             </div>
             <div class="card-body">
-                <form id="form" class="form">
-                    @csrf
+                @include('backend.layouts._message')
+                <form id="form" class="form" method="post">                    
+                    @csrf                    
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Email"  value="{{ old('email') }}" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                             <span class="fas fa-envelope"></span>
@@ -28,7 +31,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3" id="show_hide_password">
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" value="{{ old('password') }}" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -47,7 +50,7 @@
                     <a href="{{ route('reset-password') }}" class=" text-muted">Forgot Password.?</a>
                 </p>
             </div>
-        </div>
+        </div>      
     </div>
 </body>
   
@@ -55,7 +58,7 @@
 <script src="{{ url('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ url('assets/dist/js/adminlte.min.js') }}"></script>
 
-<script>
+<script type="">
 $(document).ready(function () {
     $("input[name=checkbox]").on('click', function (event) {
         // event.preventDefault();
@@ -69,6 +72,7 @@ $(document).ready(function () {
     $('form#form').submit(function (e) {
         e.preventDefault();
         var formData = new FormData(this);
+        $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}})
         $.ajax({
             url: '{{ route("welcome") }}',
             type: 'POST',
@@ -98,7 +102,52 @@ $(document).ready(function () {
             }
         });
     });
+
+
 });
+
+// $(document).ready(function() {
+//     $('#loginForm').submit(function(e) {
+//         e.preventDefault();
+//         var formData = $(this).serialize();
+
+//         $.ajax({
+//             type: 'POST',
+//             url: '{{ route("login") }}',
+//             data: formData,
+//             dataType:'json'
+//             success: function(response) {
+
+//                 if (response.status == 'success') {
+//                     $('#showMessage').html('<div class="alert alert-success alert-dismissible fade show" role="alert">'+
+//                         '<strong>'+response.message+'</strong>'+
+//                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                         '<span aria-hidden="true">&times;</span>'+
+//                         '</button>'+
+//                     '</div>').show();
+//                     // window.location.href = '/dashboard';
+
+//                 }else{
+//                     $('#showMessage').html('<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert">'+
+//                         '<strong>'+response.message+'</strong>'+
+//                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                         '<span aria-hidden="true">&times;</span>'+
+//                         '</button>'+
+//                     '</div>').show();
+//                 }
+//             },
+//             error: function(xhr, status, error) {
+//                 $('#showMessage').html('<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert">'+
+//                     '<strong>'+xhr.responseJSON.message+'</strong>'+
+//                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+//                     '<span aria-hidden="true">&times;</span>'+
+//                     '</button>'+
+//                 '</div>').show();
+
+//             }
+//         });
+//     });
+// });
 </script>
 
 <div id="forFlash"></div>

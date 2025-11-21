@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Player;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,12 +21,15 @@ class DashboardController extends Controller
 
         if (Auth::user()->role == 'admin') 
         {   
-            return view('backend.dashboard.admin_dashboard', compact('data'));
+            $total_players = Player::where('archive','=','0')->count();
+            $total_teams = Team::where('archive','=','0')->count();
+            return view('backend.dashboard.admin_dashboard', compact('data','total_players','total_teams'));
         } 
         elseif (Auth::user()->role == 'manager') 
         {
-            $warehouse = $product = $category = null;
-            return view('backend.dashboard.manager_dashboard', compact('data'));
+            $user = User::with('team')->findOrFail(Auth::id());
+            $total_players = Player::where('archive','=','0')->where('team_id','=',Auth::user()->team_id)->count();
+            return view('backend.dashboard.manager_dashboard', compact('data','user','total_players'));
         } 
         else 
         {

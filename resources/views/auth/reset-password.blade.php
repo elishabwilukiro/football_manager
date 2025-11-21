@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ !empty(strtoupper($data['title']).' | '.strtoupper($data['header'])) ? strtoupper($data['title']).' | '.strtoupper($data['header']) : ''}}</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="{{ url('assets/plugins/fontawesome-free/css/all.min.css') }}">
@@ -11,14 +12,16 @@
   <link rel="stylesheet" href="{{ url('assets/css/flash.css') }}">
 </head>
 <body class="hold-transition login-page">
+    <p class="h1 mb-5">TAREFA</p>
     <div class="login-box">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <p class="h3">{{ $data['title'] }}</p>
+                <p class="h4">{{ $data['title'] }}</p>
             </div>
             <div class="card-body">
-                <form id="form" class="form">
-                    @csrf
+                @include('backend.layouts._message')
+                <form id="form" class="form" method="post">                    
+                    @csrf    
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
                         <div class="input-group-append">
@@ -47,6 +50,8 @@
 $(document).ready(function () {
     $('form#form').submit(function (e) {
         e.preventDefault();
+        $.ajaxSetup({
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
         var formData = new FormData(this);
         $.ajax({
             url: '{{ route("welcome") }}',

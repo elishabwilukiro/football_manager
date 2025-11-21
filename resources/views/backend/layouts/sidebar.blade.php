@@ -1,7 +1,7 @@
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="{{ route('admin-dashboard') }}" class="brand-link">
-      <img src="{{ url('assets/img/AdminLTELogo.png') }}" alt="FOOTBALL MANAGER" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="{{ url('assets/Soccer_ball.svg') }}" alt="FOOTBALL MANAGER" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="" style="font-size: 15px;font-weight:700">FOOTBALL MANAGER</span>
     </a>
 
@@ -12,7 +12,7 @@
           <img src="{{ url('assets/avatar.jpg') }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="{{ route('profile') }}" class="d-block">Alexander Pierce</a>
+          <a href="{{ route('profile') }}" class="d-block">{{ (Auth::user()->first_name.' '.Auth::user()->middle_name.' '.Auth::user()->last_name) }}</a>
         </div>
       </div>
 
@@ -23,33 +23,39 @@
           <!-- Admin Menu -->
           @if (Auth::user()->role == 'admin')                
           <li class="nav-item menu-open">
-              <a href="" class="nav-link  @if (Request::segment(2) == 'dashboard') active open @endif">
+              <a href="{{ route('admin-dashboard') }}" class="nav-link  @if (Request::segment(2) == 'dashboard') active open @endif">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>Dashboard</p>
               </a>
           </li>
           <li class="nav-item">
-            <a href="{{ route('admin-user') }}" class="nav-link  @if (Request::segment(2) == 'user') active open @endif">
-              <i class="nav-icon fas fa-tree"></i>
-              <p>Manage User</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin-team') }}" class="nav-link @if (Request::segment(2) == 'team') active open @endif">
+            <a href="{{ route('admin-team-list') }}" class="nav-link @if (Request::segment(2) == 'team') active open @endif">
               <i class="nav-icon fas fa-tree"></i>
               <p>Manage Team</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{ route('admin-player') }}" class="nav-link @if (Request::segment(2) == 'player') active open @endif">
+            <a href="{{ route('admin-player-list') }}" class="nav-link @if (Request::segment(2) == 'player') active open @endif">
               <i class="nav-icon fas fa-tree"></i>
               <p>Manage Player</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{ route('admin-position') }}" class="nav-link @if (Request::segment(2) == 'position') active open @endif">
+            <a href="{{ route('admin-position-list') }}" class="nav-link @if (Request::segment(2) == 'position') active open @endif">
               <i class="nav-icon fas fa-tree"></i>
               <p>Manage Position</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('admin-user-list') }}" class="nav-link  @if (Request::segment(2) == 'user') active open @endif">
+              <i class="nav-icon fas fa-tree"></i>
+              <p>Manage User</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('admin-setting-list') }}" class="nav-link  @if (Request::segment(2) == 'setting') active open @endif">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>Manage Settings</p>
             </a>
           </li>
           <li class="nav-header">-- REPORTS</li>
@@ -76,19 +82,19 @@
           <!-- Manager Menu -->
           @if (Auth::user()->role == 'manager')                 
             <li class="nav-item menu-open">
-                <a href="" class="nav-link  @if (Request::segment(2) == 'dashboard') active open @endif">
+                <a href="{{ route('manager-dashboard') }}" class="nav-link  @if (Request::segment(2) == 'dashboard') active open @endif">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>Dashboard</p>
                 </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('manager-player') }}" class="nav-link @if (Request::segment(2) == 'player') active open @endif">
+              <a href="{{ route('manager-player-list') }}" class="nav-link @if (Request::segment(2) == 'player') active open @endif">
                 <i class="nav-icon fas fa-tree"></i>
                 <p>Player</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('manager-staff') }}" class="nav-link @if (Request::segment(2) == 'staff') active open @endif">
+              <a href="#" class="nav-link @if (Request::segment(2) == 'staff') active open @endif">
                 <i class="nav-icon fas fa-tree"></i>
                 <p>Staff</p>
               </a>

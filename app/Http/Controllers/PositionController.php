@@ -14,122 +14,105 @@ class PositionController extends Controller
 {
     public function list()
     {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
+        if (!Auth::check()) return redirect()->route('login');
         
         $data = [
                 'header' => 'PLAYER MANAGER',
-                'title' => 'All Positions',
+                'title' => 'Positions',
+                'section' => 'All Position'
             ];
 
-        $positions = Position::where('archive','=','0')->get();
+        $positions = Position::where('archive','=','0')->orderBy('id','desc')->get();
         return view('backend.positions.list', compact('data','positions'));
     }
 
-    public function listView(Request $request)
+    public function add(Request $request)
+    {
+        if (!Auth::check()) return redirect()->route('login');
+        
+        $data = [
+                'header' => 'PLAYER MANAGER',
+                'title' => 'Position',
+                'section' => 'Add New Position'
+            ];
+
+        return view('backend.positions.add', compact('data'));
+    }
+
+    public function save(Request $request)
     {
         $request->validate([
-            'team_name' => 'required',
+            'position' => 'required|string|max:255',
+            'description' => 'sometimes',
+            'status' => 'required|in:active,in_active',
+        ]);  
+
+        $position = $request->input('position');
+        $description = $request->input('description');
+        $status = $request->input('status');
+        $user_id = Auth::user()->id;
+
+        $inputs = [
+            'position_name' => $position,
+            'position_description' => $description,
+            'status' => $status,
+            'created_by' => $user_id,
+            'updated_by' => $user_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+        Position::create($inputs);
+        return redirect('admin/position/list')->with('success','Position saved successfully');
+    }
+
+    public function edit($id)
+    {
+        if (!Auth::check()) return redirect()->route('login');
+        $data = [
+                'header' => 'PLAYER MANAGER',
+                'title' => 'Position',
+                'section' => 'Edit Position'
+            ];
+        $position = Position::findOrFail(Crypt::decrypt($id));
+        return view('backend.positions.edit', compact('data','position'));    
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'position' => 'required|string|max:255',
+            'description' => 'sometimes',
+            'status' => 'required|in:active,in_active',
+        ]);  
+        $id = Crypt::decrypt($id);
+        $position = Position::findOrFail($id);
+        $inputs = [
+            'position_name'        => $validated['position'],
+            'position_description' => $validated['description'] ?? null,
+            'status'               => $validated['status'],
+            'updated_by'           => Auth::id()
+        ];
+        $updated = $position->update($inputs);
+        if($updated){
+            return redirect()
+                ->route('admin-position-list')
+                ->with('success','Position updated successfully');
+        }else{
+            return redirect()->back()->with('error','Something went wrong');
+        }
+    }
+
+    public function delete($id)
+    {
+        $id = Crypt::decrypt($id);
+
+        $position = Position::findOrFail($id);
+
+        $position->update([
+            'archive' => '1',
+            'updated_by' => Auth::id()
         ]);
-
-        $team_name = $request->input('team_name');
-        $team_email = $request->input('team_email');
-
-
-        $data = Position::where('archive','=','0')->get();
-        // $data = DB::select('select * from tbl_teams where status = ?', ['active']);
-        // if($team_name) $query->where('team_name','like','%' .$team_name. '%');
-        // if($team_email) $query->where('team_email','like','%'.$team_email.'%');
-        // $data = $query->orderBy('id','desc')->paginate(10);
-        // dd($data);
-        return view('backend.positions.list_view', compact('data'));
-    }
-
-    public function savePosition(Request $request)
-    {
-        try {
-
-            $request->validate([
-                'position' => 'required|string|max:255',
-                'description' => 'sometimes',
-                'status' => 'required|in:active,in_active',
-                'hidden_id' => 'nullable',
-            ]);  
-
-            DB::beginTransaction();
-
-            $hidden_id = $request->input('hidden_id');
-            $position = $request->input('position');
-            $description = $request->input('description');
-            $status = $request->input('status');
-            $user_id = Auth::user()->id;
-
-            if(empty($hidden_id)):
-                $inputs = [
-                    'position_name' => $position,
-                    'position_description' => $description,
-                    'status' => $status,
-                    'created_by' => $user_id,
-                    'updated_by' => $user_id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-                $data = Position::create($inputs);
-                $message = 'Position saved successfully';
-
-            else:
-
-                $inputs = [
-                    'position_name' => $position,
-                    'position_description' => $description,
-                    'status' => $status,
-                    'status' => $status,
-                    'updated_by' => $user_id,
-                ];
-
-                $condition=[
-                    'id'=>Crypt::decrypt($hidden_id),
-                    'archive'=>0
-                ];
-                $data = Position::where($condition)->update($inputs);
-                $message = 'Position updated successfully';
-
-            endif;
-
-            DB::commit();
-
-            return response()->json(['status' => 200, 'message' => $message]);
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json(['status' => 500, 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function editPosition($id)
-    {
-        $data = Position::findOrFail($id);
-        return response()->json(['data'=>$data, 'id'=>Crypt::encrypt($id)]);
-    }
-
-    public function deletePosition($id)
-    {
-        try {
-
-            $delete = Position::where('id', $id)->update('archive',1);
-            if($delete)
-            {
-                $message='Position deleted successfully';
-                return response()->json(['status' => 200, 'message' => $message]);
-            }else{
-                $message='Something went wrong. Try again!';
-                return response()->json(['status' => 450, 'message' => $message]);
-            }
-
-        } catch (\Exception $e) {
-            return response()->json(['status' => 500, 'message' => $e->getMessage()]);
-        }
+        return redirect()->back()->with('success', 'Position deleted successfully.');
     }
 
 }
