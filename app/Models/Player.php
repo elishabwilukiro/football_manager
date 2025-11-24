@@ -27,6 +27,7 @@ class Player extends Model
         'birth_certificate',
         'upload',
         'status',
+        'archive',
         'created_by',
         'updated_by',
     ];

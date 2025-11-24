@@ -96,15 +96,24 @@ class PlayerController extends Controller
             'birth_certificate' => 'nullable|mimes:jpg,jpeg,png,webp,pdf|max:4096',
 
         ]);  
-       
+        // Check if full name already exists
+       $existingPlayer = Player::with('team')
+            ->where('first_name', trim($request->first_name))
+            ->where('middle_name', trim($request->middle_name))
+            ->where('last_name', trim($request->last_name))
+            ->first();
+
+        if ($existingPlayer) {
+            $teamName = $existingPlayer->team ? $existingPlayer->team->team_name : 'No Team Assigned.';
+            return redirect()->back()
+                ->with('error', "Player already exists and registered in a  Team: {$teamName}.");
+        }
+
         $uploadPath = base_path('public/assets/uploads/');
          if (!file_exists($uploadPath)) {
             mkdir($uploadPath, 0777, true);
         }
         $photoName = null;
-        // if ($request->hasFile('photo')) {
-        //     $photoPath = $request->file('photo')->store('photo', 'public');
-        // }
         if ($request->hasFile('photo')) {
             $logo      = $request->file('photo');
             $photoName  = time() . '_photo.' . $logo->getClientOriginalExtension();
@@ -112,9 +121,6 @@ class PlayerController extends Controller
         }
 
         $fileName = null;
-        // if ($request->hasFile('birth_certificate')) {
-        //     $fileName = $request->file('birth_certificate')->store('birth_certificate', 'public');
-        // }
         if ($request->hasFile('birth_certificate')) {
             $file       = $request->file('birth_certificate');
             $fileName   = time() . '_birth_certificate.' . $file->getClientOriginalExtension();
@@ -212,7 +218,7 @@ class PlayerController extends Controller
         $photoName = $player->photo;     
         $attachName = $player->birth_certificate;  
         
-        // ========== UPDATE LOGO (ONLY IF NEW FILE PROVIDED) ==========
+        // If new photo provided
         if ($request->hasFile('photo')) {
             if ($player->photo && file_exists($uploadPath . $player->photo)) {
                 unlink($uploadPath . $player->photo);
@@ -221,32 +227,15 @@ class PlayerController extends Controller
             $photoName  = time() . '_photo.' . $photo->getClientOriginalExtension();
             $photo->move($uploadPath, $photoName);
         }
-
-        // ========== UPDATE ATTACHMENT (ONLY IF NEW FILE PROVIDED) ==========
+        // If new birth_certificate provided
         if ($request->hasFile('birth_certificate')) {
             if ($player->birth_certificate && file_exists($uploadPath . $player->birth_certificate)) {
                 unlink($uploadPath . $player->birth_certificate);
             }
-            $birth_certificate         = $request->birth_certificate('birth_certificate');
+            $birth_certificate         = $request->file('birth_certificate');
             $attachName   = time() . '_birth_certificate.' . $birth_certificate->getClientOriginalExtension();
             $birth_certificate->move($uploadPath, $attachName);
         }
-
-        // $photoPath = $player->photo; // keep old by default
-        // if ($request->hasFile('photo')) {
-        //     if ($photoPath && Storage::disk('public')->exists($photoPath)) {
-        //         Storage::disk('public')->delete($photoPath);
-        //     }
-        //     $photoPath = $request->file('photo')->store('photo', 'public');
-        // }
-
-        // $certificatePath = $player->birth_certificate; // keep old by default
-        // if ($request->hasFile('birth_certificate')) {
-        //     if ($certificatePath && Storage::disk('public')->exists($certificatePath)) {
-        //         Storage::disk('public')->delete($certificatePath);
-        //     }
-        //     $certificatePath = $request->file('birth_certificate')->store('birth_certificates', 'public');
-        // }
 
         $deadline = Setting::where('key', 'player_registration_deadline')->value('value');
         if (!$deadline) return redirect()->back()->with('error', 'Player registration deadline not configured.');        

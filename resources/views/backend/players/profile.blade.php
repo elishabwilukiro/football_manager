@@ -1,4 +1,5 @@
 @extends('backend.layouts.app')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 .id-card-container {
      width: 400px;
@@ -146,13 +147,29 @@
 </div>
 
 <script type="text/javascript">
-function printDetails(divId) {
-    var printContents = document.getElementById(divId).innerHTML;
-    var originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload();
+// function printDetails(divId) {
+//     var printContents = document.getElementById(divId).innerHTML;
+//     var originalContents = document.body.innerHTML;
+//     document.body.innerHTML = printContents;
+//     window.print();
+//     document.body.innerHTML = originalContents;
+//     location.reload();
+// }
+
+
+function printDetails(elementId) {
+    const element = document.getElementById(elementId);
+
+    html2canvas(element, { scale: 3 }).then(canvas => {
+        let imageData = canvas.toDataURL("image/png");
+
+        // Open screenshot in new tab
+        let win = window.open();
+        win.document.write('<img src="' + imageData + '" style="width:100%;">');
+        win.document.close();
+    });
+
+    return false;
 }
 
 </script>

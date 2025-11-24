@@ -108,7 +108,7 @@
                                                                  </div>
                                                             @elseif(Auth::user()->role === 'manager')
                                                                  <div class="btn-group btn-group-sm" role="group">
-                                                                      <a href="{{ url('manager/player/details/'. Crypt::encrypt($player->id)) }}" class="btn btn-info" title="Edit"><i class="far fa-eye"></i></a>
+                                                                      <a href="{{ url('manager/player/details/'. Crypt::encrypt($player->id)) }}" class="btn btn-info" title="Profile"><i class="far fa-eye"></i></a>
                                                                       <a href="{{ url('manager/player/edit/'. Crypt::encrypt($player->id)) }}" class="btn btn-warning" title="Edit"><i class="far fa-edit"></i></a>
                                                                       <a onclick="return confirm('ARE YOU SURE YOU WANT TO DELETE THE RECORD.?') ? window.location.href='{{ url('manager/player/delete/'. Crypt::encrypt($player->id)) }}':false" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></a>
                                                                  </div>
