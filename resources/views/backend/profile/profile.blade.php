@@ -12,9 +12,11 @@
                               <div class="card">
                                    <div class="card-body box-profile">
                                         <div class="text-center">
-                                        <img class="profile-user-img img-fluid img-circle"
-                                             src="{{ url('assets/avatar.jpg') }}"
-                                             alt="User profile picture">
+                                        @if (!empty($user->upload))
+                                             <img alt="Photo" src="{{ url('uploads/user_uploads/' . $user->upload) }}" class="profile-user-img img-fluid img-circle">                                       
+                                        @else     
+                                             <img alt="Photo" src="{{ url('assets/avatar.jpg') }}" class="profile-user-img img-fluid img-circle">                                                                                    
+                                        @endif
                                         </div>
 
                                         <h3 class="profile-username text-center">
@@ -34,7 +36,7 @@
                                         <b>Location:</b> <a class="float-right">{{ $user->location ?? 'N/A' }}</a>
                                         </li>
                                         <li class="list-group-item">
-                                        <b>Team Name:</b> <a class="float-right">{{ $user->team_name ?? 'N/A' }}</a>
+                                        <b>Team Name:</b> <a class="float-right">{{ $user->team->team_name ?? 'N/A' }}</a>
                                         </li>
                                         </ul>
                                    </div>

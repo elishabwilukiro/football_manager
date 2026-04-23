@@ -53,7 +53,7 @@ class TeamController extends Controller
             'stadium' => 'nullable|string|max:255',
             'status' => 'required|in:active,in_active',
             // 'founded_year' => 'nullable|string',
-            // 'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'registration_certificate' => 'nullable|mimes:jpg,jpeg,png,webp,pdf|max:4096',
         ]);
         
@@ -67,14 +67,17 @@ class TeamController extends Controller
         
         $reg_number = strtoupper(Str::random(4)) . '-' . date('Y');  // e.g. AB3X-2025
 
-        // $logoPath = null;
-        // if ($request->hasFile('logo')) {
-        //     $logoPath = $request->file('logo')->store('logos', 'public');
-        // }
-
-        $certificatePath = null;
+        $logoName = null;
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $photoName = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/team_uploads'), $photoName);
+        }
+        $certificateName = null;
         if ($request->hasFile('registration_certificate')) {
-            $certificatePath = $request->file('registration_certificate')->store('certificates', 'public');
+            $file = $request->file('registration_certificate');
+            $certificateName = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/team_uploads'), $certificateName);
         }
         
         $inputs = [
@@ -86,8 +89,8 @@ class TeamController extends Controller
             'team_number' => $request->phone_number,
             'stadium' => $request->stadium,
             // 'founded_year' => $request->founded_year,
-            // 'logo' => $logoPath,
-            'registration_certificate' => $certificatePath,
+            'logo' => $logoName,
+            'registration_certificate' => $certificateName,
             'status' => $request->status,
             'created_by' => $user_id,
             'updated_by' => $user_id,
@@ -123,7 +126,7 @@ class TeamController extends Controller
             'stadium'        => 'nullable|max:255',
             'status'         => 'required|in:active,in_active',
             // 'founded_year'   => 'required|string',
-            // 'logo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'logo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'registration_certificate' => 'nullable|mimes:jpg,jpeg,png,webp,pdf|max:4096',
         
         ]);
@@ -132,6 +135,12 @@ class TeamController extends Controller
         $team = Team::findOrFail($id);
         $user_id = Auth::id();
 
+        $logoName = null;
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $photoName = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/team_uploads'), $photoName);
+        }
         $certificatePath = $team->registration_certificate; // keep old by default
         if ($request->hasFile('registration_certificate')) {
             // OPTIONAL: delete old file if exists

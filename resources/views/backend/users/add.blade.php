@@ -33,7 +33,7 @@
                                              </div>
                                              <div class="col-md-4 col-sm-12">
                                                   <div class="form-group">
-                                                       <label>Lst name <span class="text-danger">*</span></label>
+                                                       <label>Last name <span class="text-danger">*</span></label>
                                                        <input type="text" class="form-control" name="last_name" id="last_name" value="{{ old('last_name') }}" placeholder="Doe" required>
                                                        <small class="text-danger">{{ $errors->first('last_name') }}</small>
                                                   </div>
@@ -53,19 +53,9 @@
                                                   </div>
                                              </div>
                                              <div class="col-md-4 col-sm-12">
-                                                  <div class="row">
-                                                       <div class="col-8">
-                                                            <label for="">Password <span class="text-danger">*</span></label>
-                                                            <div class="form-group" id="show_hide_password">
-                                                                 <input type="password" id="password" name="password" class="form-control" value="{{ old('') }}" placeholder="Enter password">
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-4 mt-5">
-                                                            <div class="checkbox" id="show_hide_pwd">
-                                                                 <input id="checkbox" name="checkbox" type="checkbox">
-                                                                 <label for="checkbox">Show</label>
-                                                            </div>
-                                                       </div>
+                                                  <div class="form-group">
+                                                       <label for="">Default password <span class="text-danger">*</span></label>
+                                                       <input type="text" id="password" name="password" class="form-control" value="password@123" disabled placeholder="Enter password">
                                                        <small class="text-danger">{{ $errors->first('password') }}</small>
                                                   </div>
                                              </div>
@@ -137,21 +127,4 @@
     </section>
 </div>
 
-
-
-<script type="text/javascript">
-
-
-$(document).ready(function () {
-    $("input[name=checkbox]").on('click', function (event) {
-        // event.preventDefault();
-        if ($('#show_hide_password input').attr("type") == "text") {
-            $('#show_hide_password input').attr('type', 'password');
-        } else if ($('#show_hide_password input').attr("type") == "password") {
-            $('#show_hide_password input').attr('type', 'text');
-        }
-    });
-});
-
-</script>
 @endsection

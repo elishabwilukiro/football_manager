@@ -53,7 +53,7 @@ class UserController extends Controller
             'username'     => 'sometimes|string|max:255',
             'email'        => 'required|email|unique:tbl_users,email',
             'location'     => 'required|string|max:255',
-            'password'     => 'required|string|min:3',
+            'password'     => 'sometimes|string',
             'phone_number' => 'required|digits:10',
             'role'         => 'required|string',
             'team_id'      => 'sometimes|integer',

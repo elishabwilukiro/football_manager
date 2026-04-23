@@ -1,4 +1,13 @@
 @extends('backend.layouts.app')
+<style>
+img {
+     width: 60px;
+     height: 60px;
+     border-radius: 50%;
+     object-fit: cover;
+     border: 1px solid #1e3c72;
+}
+</style>
 @section('content')
 
 <div class="content-wrapper">
@@ -19,7 +28,7 @@
                               </div>
                               <div class="card-body">
                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered">
+                                        <table id="example1" class="table table-striped table-bordered">
                                              <thead>
                                                   <tr>
                                                        <th class="text-uppercase">SN</th>
@@ -42,10 +51,10 @@
                                                        <td> {{ $n++; }}</td>
                                                        <td> 
                                                             <figure>
-                                                                 @if (!empty($item->photo))
-                                                                      <img alt="logo" src="{{ url('uploads/users/' . $item->logo) }}" class="avatar avatar-lg" width="40">                                       
+                                                                 @if (!empty($item->upload))
+                                                                      <img alt="Photo" src="{{ url('uploads/user_uploads/' . $item->upload) }}">                                       
                                                                  @else     
-                                                                      <img alt="image" src="{{ url('assets/avatar.jpg') }}" class="avatar avatar-lg" width="40">                                                                                    
+                                                                      <img alt="Photo" src="{{ url('assets/avatar.jpg') }}">                                                                                    
                                                                  @endif
                                                             </figure>
                                                        </td>

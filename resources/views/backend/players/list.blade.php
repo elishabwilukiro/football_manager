@@ -1,7 +1,14 @@
 @extends('backend.layouts.app')
+<style>
+img {
+     width: 60px;
+     height: 60px;
+     border-radius: 50%;
+     object-fit: cover;
+     border: 1px solid #1e3c72;
+}
+</style>
 @section('content')
-
-
 <div class="content-wrapper">
      @include('backend.layouts.header')
     <section class="content mt-3">
@@ -20,7 +27,7 @@
                               </div>
                               <div class="card-body">
                                    <div class="table-responsive">              
-                                        <table class="table table-striped table-bordered">
+                                        <table id="example1" class="table table-striped table-bordered">
                                              <thead>
                                                   <tr>
                                                        <th class="text-uppercase">SN</th>
@@ -52,9 +59,9 @@
                                                             <td> 
                                                                  <figure>
                                                                       @if(!empty($player->upload))
-                                                                           <img alt="logo" src="{{ asset('assets/uploads/' . $player->upload) }}" class="avatar avatar-lg" width="60">                                       
+                                                                           <img alt="logo" src="{{ asset('assets/uploads/' . $player->upload) }}">                                       
                                                                       @else     
-                                                                           <img alt="image" src="{{ url('assets/avatar.jpg') }}" class="avatar avatar-lg" width="60">                                                                                    
+                                                                           <img alt="image" src="{{ url('assets/avatar.jpg') }}">                                                                                    
                                                                       @endif
                                                                  </figure>
                                                             </td>

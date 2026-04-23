@@ -26,8 +26,8 @@
      margin-top: 20px;
 }
 .profile-section img {
-     width: 95px;
-     height: 95px;
+     width: 100px;
+     height: 100px;
      border-radius: 50%;
      object-fit: cover;
      border: 1px solid #1e3c72;
@@ -53,7 +53,7 @@
 }
 .barcode img,
 .barcode h6 {
-     width: 75%;
+     width: 80%;
 }
 .footer2 {
      background: #f7f7f7;
@@ -91,7 +91,6 @@
                                    <h3 class="card-title">{{ (strtoupper($data['section'])) }}</h3>
                               </div>
                               <div class="card-body bg-light">
-                                   <!-- Player ID Card -->
                                    <div id="printArea" class="col-md-4 offset-md-4 col-sm-12">
                                         <div class="id-card-container">
                                         <div class="header">
@@ -99,14 +98,14 @@
                                         </div>
                                         <div class="profile-section">
                                              @if(!empty($player->upload))
-                                                  <img alt="Photo" src="{{ asset('assets/uploads/' . $player->upload) }}">                                       
+                                                  <img alt="Photo" src="{{ asset('assets/uploads/' . $player->upload) }}" class="p-1">                                       
                                              @else     
-                                                  <img alt="Photo" src="{{ url('assets/avatar.jpg') }}">                                                                                    
+                                                  <img alt="Photo" src="{{ url('assets/avatar.jpg') }}" class="p-1">                                                                                    
                                              @endif
                                         </div>
                                         <div class="details">
                                              <h2 class="mb-2 fw-bold">{{ $player->first_name.' '.$player->middle_name.' '.$player->last_name }}</h2>
-                                             <div class="detail-item"><strong class="text-muted">Registration Number:</strong> {{ $player->registration_number ?? 'N/A' }}</div>
+                                             <div class="detail-item"><strong class="text-muted float-right">Registration Number:</strong> {{ $player->registration_number ?? 'N/A' }}</div>
                                              <div class="detail-item"><strong class="text-muted">Birth Certificate No.:</strong> {{ $player->birth_certificate_no ?? 'N/A' }}</div>
                                              <div class="detail-item"><strong class="text-muted">Date of Birth:</strong> {{ \Carbon\Carbon::parse($player->date_of_birth)->format('d-m-Y') }}</div>
                                              <div class="detail-item"><strong class="text-muted">Phone Number:</strong> {{ $player->phone_number ?? 'N/A' }}</div>
